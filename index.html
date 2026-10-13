@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de Claves Taxonómicas Botánicas</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background-color: #f0fdf4;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="min-h-screen p-4 md:p-8 text-gray-800">
+
+    <div class="max-w-4xl mx-auto glass-panel rounded-2xl p-6 md:p-10">
+        <header class="text-center mb-10 border-b pb-6 border-green-200">
+            <h1 class="text-3xl md:text-4xl font-extrabold text-green-700 mb-2">Clasificador Taxonómico Vegetativo</h1>
+            <p class="text-gray-600 text-lg">Ingresa las características morfológicas para identificar la probable <strong>Familia Botánica</strong>.</p>
+        </header>
+
+        <form id="taxonomyForm" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            
+            <!-- Hábito y Semilla -->
+            <div class="space-y-2">
+                <label class="block font-semibold text-gray-700">1. Tipo de Planta (Hábito)</label>
+                <select id="habito" class="w-full p-3 border border-green-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white">
+                    <option value="hierba">Hierba (Herbácea)</option>
+                    <option value="arbusto">Arbusto</option>
+                    <option value="arbol">Árbol</option>
+                </select>
+            </div>
+
+            <div class="space-y-2">
+                <label class="block font-semibold text-gray-700">2. Cotiledones</label>
+                <select id="cotiledon" class="w-full p-3 border border-green-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white">
+                    <option value="monocotiledonea">Monocotiledónea</option>
+                    <option value="dicotiledonea">Dicotiledónea</option>
+                </select>
+            </div>
+
+            <!-- Morfología de la Hoja -->
+            <div class="space-y-2">
+                <label class="block font-semibold text-gray-700">3. Disposición de las hojas</label>
+                <select id="disposicion" class="w-full p-3 border border-green-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white">
+                    <option value="alterna">Alterna (Una por nudo)</option>
+                    <option value="opuesta">Opuesta (Dos por nudo)</option>
+                    <option value="verticilada">Verticilada (Tres o más por nudo)</option>
+                    <option value="roseta">En Roseta (Basal)</option>
+                </select>
+            </div>
+
+            <div class="space-y-2">
+                <label class="block font-semibold text-gray-700">4. Nervadura</label>
+                <select id="nervadura" class="w-full p-3 border border-green-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white">
+                    <option value="paralelinervia">Paralelinervia (Paralelas)</option>
+                    <option value="pinnatinervia">Pinnatinervia (Forma de pluma)</option>
+                    <option value="palmatinervia">Palmatinervia (Forma de mano)</option>
+                </select>
+            </div>
+
+            <div class="space-y-2">
+                <label class="block font-semibold text-gray-700">5. Borde (Margen)</label>
+                <select id="borde" class="w-full p-3 border border-green-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white">
+                    <option value="entero">Entero (Liso)</option>
+                    <option value="aserrado">Aserrado / Dentado</option>
+                    <option value="lobulado">Lobulado</option>
+                </select>
+            </div>
+
+            <div class="space-y-2">
+                <label class="block font-semibold text-gray-700">6. Base de la hoja</label>
+                <select id="base" class="w-full p-3 border border-green-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white">
+                    <option value="cuneada">Cuneada / Atenuada</option>
+                    <option value="cordada">Cordada (Corazón)</option>
+                    <option value="envainadora">Envainadora (Abraza el tallo)</option>
+                </select>
+            </div>
+
+            <div class="space-y-2">
+                <label class="block font-semibold text-gray-700">7. Ápice (Punta)</label>
+                <select id="apice" class="w-full p-3 border border-green-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white">
+                    <option value="agudo">Agudo / Acuminado</option>
+                    <option value="obtuso">Obtuso / Redondeado</option>
+                </select>
+            </div>
+
+            <div class="space-y-2">
+                <label class="block font-semibold text-gray-700">8. Pecíolo</label>
+                <select id="peciolo" class="w-full p-3 border border-green-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white">
+                    <option value="peciolada">Peciolada (Tiene tallito)</option>
+                    <option value="sesil">Sésil (Sin pecíolo, unida al tallo)</option>
+                </select>
+            </div>
+
+            <div class="md:col-span-2 mt-4 text-center">
+                <button type="button" onclick="generarClave()" class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-8 rounded-full shadow-lg transition transform hover:scale-105">
+                    Identificar Familia Botánica
+                </button>
+            </div>
+        </form>
+
+        <!-- Resultados -->
+        <div id="resultadoContainer" class="hidden mt-10 p-6 bg-green-50 border-l-4 border-green-600 rounded-r-lg fade-in text-left">
+            <h2 class="text-2xl font-bold text-green-800 mb-4">Resultado Taxonómico</h2>
+            <div id="rutaClave" class="text-sm text-gray-600 mb-4 font-mono bg-white p-3 rounded border border-gray-200">
+                <!-- Aquí va la ruta -->
+            </div>
+            
+            <div class="bg-white p-4 rounded-lg shadow-sm border border-green-100">
+                <h3 class="text-lg text-gray-500 uppercase tracking-wider font-semibold text-sm">Familia Sugerida:</h3>
+                <p id="familiaSugerida" class="text-3xl font-bold text-green-700 my-2"></p>
+                <p id="descripcionFamilia" class="text-gray-700 mt-2"></p>
+                
+                <div class="mt-4 p-3 bg-yellow-50 text-yellow-800 rounded text-xs border border-yellow-200">
+                    <strong>Nota Científica:</strong> La clasificación taxonómica exacta (hasta especie) requiere el análisis de las estructuras reproductivas (flores y frutos). Este resultado es una aproximación basada en rasgos vegetativos comunes.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function generarClave() {
+            // Recolectar datos
+            const habito = document.getElementById('habito').value;
+            const cotiledon = document.getElementById('cotiledon').value;
+            const disposicion = document.getElementById('disposicion').value;
+            const nervadura = document.getElementById('nervadura').value;
+            const borde = document.getElementById('borde').value;
+            const base = document.getElementById('base').value;
+            const apice = document.getElementById('apice').value;
+            const peciolo = document.getElementById('peciolo').value;
+
+            let familia = "Familia Indeterminada";
+            let descripcion = "La combinación de características vegetativas es muy general. Se requiere observar la flor para determinar la familia.";
+
+            // --- MOTOR DE INFERENCIA TAXONÓMICA ---
+            
+            if (cotiledon === 'monocotiledonea') {
+                if (nervadura === 'paralelinervia') {
+                    if (habito === 'hierba') {
+                        if (peciolo === 'sesil' && base === 'envainadora') {
+                            familia = "Poaceae (Gramíneas)";
+                            descripcion = "Plantas herbáceas con hojas envainadoras y nervadura paralela. Ejemplos: Pastos, maíz, caña de azúcar, arroz.";
+                        } else if (disposicion === 'roseta') {
+                            familia = "Bromeliaceae / Agavaceae";
+                            descripcion = "Hojas en roseta basal, comunes en ambientes epífitos o áridos. Ejemplos: Piña, sábila (Asphodelaceae), maguey.";
+                        } else {
+                            familia = "Liliaceae / Orchidaceae";
+                            descripcion = "Monocotiledóneas herbáceas comunes. Requieren la flor (orquídea o lirio) para separarse. Ejemplos: Lirios, orquídeas, cebolla.";
+                        }
+                    } else if (habito === 'arbol') {
+                        familia = "Arecaceae (Palmas)";
+                        descripcion = "Monocotiledóneas arborescentes. Aunque sus hojas parecen pinnadas o palmadas, el patrón de nervadura base es paralelo. Ejemplos: Palma de cera, cocotero, palma de aceite.";
+                    } else if (habito === 'arbusto' && peciolo === 'peciolada') {
+                        familia = "Musaceae / Araceae";
+                        descripcion = "Monocotiledóneas de gran tamaño o trepadoras con pseudopeciolos. Ejemplos: Plátano, banano (Musaceae), anturios, filodendros (Araceae).";
+                    }
+                } else {
+                    familia = "Araceae / Dioscoreaceae";
+                    descripcion = "Excepciones de monocotiledóneas con nervadura reticulada (no paralela). Ejemplos: Ñame (Dioscoreaceae), balazo o ceriman (Araceae).";
+                }
+            } 
+            
+            else if (cotiledon === 'dicotiledonea') {
+                if (disposicion === 'opuesta') {
+                    if (borde === 'entero') {
+                        if (habito === 'arbol' || habito === 'arbusto') {
+                            familia = "Rubiaceae / Myrtaceae";
+                            descripcion = "Árboles y arbustos de hojas opuestas y enteras. Las Rubiáceas tienen estípulas interpeciolares; las Mirtáceas tienen glándulas translúcidas. Ejemplos: Cafeto (Rubiaceae), Guayabo, Eucalipto (Myrtaceae).";
+                        } else {
+                            familia = "Apocynaceae / Melastomataceae";
+                            descripcion = "Hojas opuestas. Si tiene venas longitudinales marcadas es Melastomataceae (siete cueros); si tiene látex blanco es Apocynaceae.";
+                        }
+                    } else if (borde === 'aserrado' || borde === 'lobulado') {
+                        if (habito === 'hierba') {
+                            familia = "Lamiaceae (Labiadas)";
+                            descripcion = "Hierbas de tallos cuadrangulares, hojas opuestas y aserradas, generalmente aromáticas. Ejemplos: Menta, orégano, albahaca, romero.";
+                        } else {
+                            familia = "Verbenaceae / Bignoniaceae";
+                            descripcion = "Arbustos o árboles de hojas opuestas aserradas (o compuestas en Bignoniaceae). Ejemplos: Verbena, Guayacán.";
+                        }
+                    }
+                } 
+                else if (disposicion === 'alterna') {
+                    if (nervadura === 'palmatinervia') {
+                        familia = "Malvaceae / Euphorbiaceae";
+                        descripcion = "Hojas alternas con nervadura en forma de mano. Ejemplos: Algodón, cayeno, cacao (Malvaceae); Yuca, ricino (Euphorbiaceae).";
+                    } else if (borde === 'aserrado' || borde === 'lobulado') {
+                        familia = "Rosaceae / Moraceae / Asteraceae";
+                        descripcion = "Un grupo amplio. Asteraceae si es hierba con inflorescencia en capítulo; Moraceae si es árbol con látex (higo, mora); Rosaceae si es frutal (rosa, manzano).";
+                    } else if (borde === 'entero') {
+                        if (habito === 'arbol') {
+                            familia = "Lauraceae / Fabaceae";
+                            descripcion = "Árboles de hojas alternas enteras. Lauraceae si son aromáticas (aguacate, laurel). Fabaceae si en realidad son foliolos de una hoja compuesta (leguminosas, trébol, acacia).";
+                        } else {
+                            familia = "Solanaceae";
+                            descripcion = "Hierbas o arbustos de hojas alternas, simples, enteras o levemente sinuadas. Ejemplos: Tomate, papa, ají, tabaco.";
+                        }
+                    }
+                } else if (disposicion === 'verticilada') {
+                    familia = "Rubiaceae / Apocynaceae";
+                    descripcion = "Algunas especies de estas familias presentan hojas verticiladas. Ejemplos: Ciertas especies de cafetos silvestres o el laurel de jardín (Nerium).";
+                }
+            }
+
+            // Construir la ruta leída
+            const ruta = `[${cotiledon.toUpperCase()}] > Hábito: ${habito} > Hojas: ${disposicion} > Nervadura: ${nervadura} > Borde: ${borde} > Base: ${base} > Pecíolo: ${peciolo}`;
+            
+            // Mostrar resultados
+            document.getElementById('rutaClave').innerText = ruta;
+            document.getElementById('familiaSugerida').innerText = familia;
+            document.getElementById('descripcionFamilia').innerText = descripcion;
+            
+            const resultadoContainer = document.getElementById('resultadoContainer');
+            resultadoContainer.classList.remove('hidden');
+            
+            // Scroll suave hacia el resultado
+            resultadoContainer.scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
